@@ -1,0 +1,65 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: Installation d'Apache
+      ansible.builtin.shell:
+       cmd: apt install apache2 -y
+
+    - name: Installation de PHP
+      ansible.builtin.shell:
+       cmd: apt install php7.4* -y
+
+    - name: Installation de Unzip
+      ansible.builtin.shell:
+       cmd: apt install unzip -y
+    
+    - name: Téléchargement de l'archive Nextcloud
+      ansible.builtin.get_url:
+       url: "https://download.nextcloud.com/server/releases/nextcloud-23.0.0.zip"
+       dest: /var/www/
+    
+    - name: Extraction de l'archive
+      ansible.builtin.shell:
+       cmd: unzip nextcloud-23.0.0.zip
+
+    - name: Attribution des droits sur le répertoire Web Nextcloud
+      ansible.builtin.shell:
+       cmd: chmod 755 /var/www/nextcloud
+
+    - name: Modification du répertoire web par défaut d'Apache2 pour Nextcloud
+      ansible.builtin.shell:
+       cmd: sed -i 's/html/nextcloud/g' /etc/apache2/sites-available/000-default.conf
+
+    - name: Redémarrage du service Apache2
+      ansible.builtin.shell:
+       cmd: systemctl restart apache2
+
+  vars: 
+    - nextcloud_version: "23.0.0"
+  #vars_prompt:
+    - mysql_root_password: password123
+      #prompt: "MariaDB root password"
+      #private: yes
+    - nextcloud_mariadb_password: password123
+      #prompt: "Nextcloud MariaDB password"
+      #private: yes
+    #- your_domain: null
+      #prompt: "Your domain"
+      #private: no
+    - nextcloud_port: 443
+      #prompt: "Nextcloud HTTPS port"
+      #default: 443
+      #private: no
+    - nextcloud_instance_name: nextcloudHLVH
+      #prompt: "Nextcloud instance name (URL will be https://[thisvalue].[your_domain])"
+      #default: "nextcloud"
+      #private: no
+    #- name: admin_email
+    #  prompt: "Administrator email (for LE certs)"
+    #  private: no
+  roles: 
+    #- {role: lemp_stack}
+    #- {role: letsencrypt_challenge}
+    - {role: nextcloud_installation}
