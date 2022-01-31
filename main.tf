@@ -65,6 +65,9 @@ resource "scaleway_instance_server" "nextcloud_2" {
 
 
 /*
+
+## BDD NON FONCTIONNELLE : TICKET INCIDENT SCALEWAY OUVERT
+
 resource "scaleway_rdb_instance" "main" {
   name          = "BDD_Nextcloud"
   node_type     = "DB-GP-XS"

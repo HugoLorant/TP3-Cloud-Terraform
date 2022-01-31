@@ -30,7 +30,7 @@
     
     - name: Téléchargement de l'archive Nextcloud
       ansible.builtin.shell:
-       cmd: wget /var/www/ https://download.nextcloud.com/server/releases/nextcloud-23.0.0.zip
+       cmd: cd /var/www && wget https://download.nextcloud.com/server/releases/nextcloud-23.0.0.zip
     
     - name: Extraction de l'archive
       ansible.builtin.shell:
