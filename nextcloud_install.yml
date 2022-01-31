@@ -6,23 +6,35 @@
     - name: Installation d'Apache
       ansible.builtin.shell:
        cmd: apt install apache2 -y
-
+    
     - name: Installation de PHP
-      ansible.builtin.shell:
-       cmd: apt install php7.4* -y
+      apt:
+        pkg:
+         - php
+         - php-gd
+         - php-mysql
+         - php-curl
+         - php-mbstring
+         - php-intl
+         - php-gmp
+         - php-bcmath
+         - php-imagick
+         - php-xml
+         - php-zip
+        state: latest
+        update_cache: true
 
     - name: Installation de Unzip
       ansible.builtin.shell:
        cmd: apt install unzip -y
     
     - name: Téléchargement de l'archive Nextcloud
-      ansible.builtin.get_url:
-       url: "https://download.nextcloud.com/server/releases/nextcloud-23.0.0.zip"
-       dest: /var/www/
+      ansible.builtin.shell:
+       cmd: wget /var/www/ https://download.nextcloud.com/server/releases/nextcloud-23.0.0.zip
     
     - name: Extraction de l'archive
       ansible.builtin.shell:
-       cmd: unzip nextcloud-23.0.0.zip
+       cmd: unzip /var/www/nextcloud-23.0.0.zip
 
     - name: Attribution des droits sur le répertoire Web Nextcloud
       ansible.builtin.shell:
@@ -35,31 +47,3 @@
     - name: Redémarrage du service Apache2
       ansible.builtin.shell:
        cmd: systemctl restart apache2
-
-  vars: 
-    - nextcloud_version: "23.0.0"
-  #vars_prompt:
-    - mysql_root_password: password123
-      #prompt: "MariaDB root password"
-      #private: yes
-    - nextcloud_mariadb_password: password123
-      #prompt: "Nextcloud MariaDB password"
-      #private: yes
-    #- your_domain: null
-      #prompt: "Your domain"
-      #private: no
-    - nextcloud_port: 443
-      #prompt: "Nextcloud HTTPS port"
-      #default: 443
-      #private: no
-    - nextcloud_instance_name: nextcloudHLVH
-      #prompt: "Nextcloud instance name (URL will be https://[thisvalue].[your_domain])"
-      #default: "nextcloud"
-      #private: no
-    #- name: admin_email
-    #  prompt: "Administrator email (for LE certs)"
-    #  private: no
-  roles: 
-    #- {role: lemp_stack}
-    #- {role: letsencrypt_challenge}
-    - {role: nextcloud_installation}
